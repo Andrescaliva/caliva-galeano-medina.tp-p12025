@@ -13,11 +13,11 @@ public class Juego extends InterfaceJuego {
 	// Variables y métodos propios de cada grupo
 	//Tamaño del tablero
 	private int fila=5;
-	private int columna=8;
+	private int columna=10;
 	private Grinch[] zombieGrinch;
 	private Planta[] plantas;
 	private int zombiesEliminados;
-	private int zombiesRestantes=100;
+	private int zombiesRestantes;
 	
 	
 	public Juego() {
@@ -27,7 +27,9 @@ public class Juego extends InterfaceJuego {
 		// Inicializar lo que haga falta para el juego
 		
 		this.zombieGrinch=new Grinch[15];
-		this.plantas=null;
+		this.plantas=new Planta[5];
+		this.zombiesEliminados=0;
+		this.zombiesRestantes=100;
 		// Inicia el juego!
 		this.entorno.iniciar();
 	}
@@ -40,8 +42,7 @@ public class Juego extends InterfaceJuego {
 	 */
 	public void tick()
 	{
-		// Procesamiento de un instante de tiempo
-		// ...
+		
 		
 	}
 	
