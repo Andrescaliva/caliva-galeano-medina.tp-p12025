@@ -41,7 +41,24 @@ public class Juego extends InterfaceJuego {
 	 * (ver el enunciado del TP para mayor detalle).
 	 */
 	public void tick()
-	{
+	{	int anchoCasillero=entorno.ancho()/columna;
+	int altoCasillero=entorno.alto()/fila;
+	// Recorremos todas las filas.
+    for (int i = 0; i < fila; i++) {
+        // Dentro de cada fila, recorremos todas las columnas.
+        for (int j = 0; j < columna; j++) {
+        	int x=j*anchoCasillero+anchoCasillero/2;
+            int y=i*altoCasillero+altoCasillero/2;
+            // La suma de la fila (i) y la columna (j) determina el color de la casilla.
+            // Si la suma es par, es una casilla verde claro.
+            if ((i + j) % 2 == 0) {
+            	entorno.dibujarRectangulo(x, y, anchoCasillero, altoCasillero, 0, Color.GREEN);
+            } else {
+                // Si la suma es impar, es una casilla verde oscuro.
+                entorno.dibujarRectangulo(x, y, anchoCasillero, altoCasillero, 0, Color.GREEN.darker());
+            }
+        }
+    }
 		
 		
 	}
