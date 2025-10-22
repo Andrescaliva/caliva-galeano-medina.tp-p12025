@@ -9,23 +9,24 @@ public class Grinch {
 	private double velocidad;
 	private double vida;
 	//private Image imagenGrinch;
-	private Color color;
 	
 	
-	public Grinch(int x, int y) {
-		this.x=5;
+	
+	public Grinch(int x) {
+		this.x=x;
 		this.y=8;
 		this.velocidad=1;
 		this.vida=2;
 			
 	}
+	
 
 	public void dibujarGrinch(Entorno e) {
-		e.dibujarRectangulo(x, y, 0, 5, 0, color.green);
+		e.dibujarRectangulo(x, y, 0, 5, 0, Color.GREEN);
 	}
 	
 	
-	public void moverIzquierda(Entorno e) {//Da el moviemiento de un zombie grinch
+	public void moverIzquierda() {//Da el moviemiento de un zombie grinch
 		if(x>0) {
 			x--;
 		}

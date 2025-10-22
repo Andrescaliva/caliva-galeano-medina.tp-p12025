@@ -1,14 +1,17 @@
 package juego;
 
+import java.awt.Color;
+
 import entorno.Entorno;
 
 public class Planta {
 	private int x;//Fila 
 	private int y;//Columna
 	private int vida;
+	private int diametro;
 	private boolean seleccionada;
 	
-	public Planta(Entorno e) {
+	public Planta(int x, int y) {
 		this.x=8;
 		this.y=4;
 		this.vida=3;
@@ -17,9 +20,8 @@ public class Planta {
 	
 	
 	public void dibujar(Entorno e) {
-		e.dibujarCirculo(x, y, vida, null);
+		e.dibujarCirculo(x, y, 0.8,Color.RED);
 	}
-	
 	
 	public void danio(int danio) {// Daño que recibe de los zombie
 		vida-=danio;
