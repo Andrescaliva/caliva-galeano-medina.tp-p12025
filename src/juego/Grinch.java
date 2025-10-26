@@ -18,19 +18,19 @@ public class Grinch {
 	
 	public Grinch(double x) {
 		Random orden=new Random();
-		int[] opciones ={360, 48, 360, 500} ;
+		int[] opciones ={60,180,300,420,540}; // centro de las filas
 		this.x=x;
-		this.y=opciones[orden.nextInt(4)];
+		this.y=opciones[orden.nextInt(5)];
 		this.velocidad=1;
 		this.vida=2;
-		this.tamanio=30;
+		this.tamanio= 40;
 		orden.nextInt(5);
 	}
 	
 
 	public void dibujarGrinch(Entorno e) {
 		e.dibujarRectangulo(x, y, 20, 10, 0, Color.RED);
-		e.dibujarRectangulo(x, 20, 20, 10, 0, Color.RED);
+		//dibujarRectangulo(x, 20, 20, 10, 0, Color.RED);
 	}
 	
 	

@@ -18,6 +18,7 @@ public class Juego extends InterfaceJuego {
 	private Grinch[] zombieGrinch;
 	private Planta[][] plantas;
 	private Casillero[][] tablero;
+	private Regalos[] regalos;
 	private Grinch grinch;
 	private Planta planta;
 	private int zombiesEliminados;
@@ -43,16 +44,35 @@ public class Juego extends InterfaceJuego {
 		this.zombiesRestantes=100;
 		this.tiempo=0;
 		this.random= new Random();
+		
+		this.regalos = new Regalos[fila]; 
+
+		// Calculo dimensiones para ubicar el regalo
+		int anchoCasillero = entorno.ancho() / columna; 
+		int altoCasillero = entorno.alto() / fila; 
+
+		// Posición X (Columna 0, centrada):
+		int xInicialRegalo = anchoCasillero / 2; 
+
+		// 5 regalos, uno por fila, centrados verticalmente.
+		for (int i = 0; i < fila; i++) {
+		    int yInicialRegalo =( i * altoCasillero) + altoCasillero / 2;    // calculo los centros de las filas
+		    
+		    this.regalos[i] = new Regalos(xInicialRegalo, yInicialRegalo); 
+		}
+		
+		
 		// Inicia el juego!
 		this.entorno.iniciar();
 		
 		//Creacion del tablero
 		this.tablero = new Casillero[fila][columna];
-		int anchoCasillero=entorno.ancho()/columna;
-		int altoCasillero=entorno.alto()/fila;
-		int diametroCirculo = (int)(Math.min(anchoCasillero, altoCasillero) * 0.8); // circuloo
+		int anchocasillero=entorno.ancho()/columna;
+		int altocasillero=entorno.alto()/fila;
+		
 		// Recorremos todas las filas.
 		for (int i = 0; i < fila; i++) {
+			
         // Dentro de cada fila, recorremos todas las columnas.
 			for (int j = 0; j < columna; j++) {
 				int x=j*anchoCasillero+anchoCasillero/2;
@@ -122,20 +142,26 @@ public class Juego extends InterfaceJuego {
 			}
 			
 		}
-//		if(tiempo<=0) {
+	if(tiempo<=0) {
 			grinch.dibujarGrinch(entorno);
 			grinch.moverIzquierda();
-//			tiempo--;
-//		}
+			tiempo--;
+		}
 		
 		//Posicion de plantas
-		/*planta.dibujar(entorno);
+		planta.dibujar(entorno);
 		for(int i=0;i<plantas.length;i++) {
-			if(plantas[i]!=null) {
-				plantas[i].dibujar(entorno);
+			for(int j=0;j<plantas.length;j++) {
+				if(plantas[i][j]!=null) {
+					plantas[i][j].dibujar(entorno);
+				}
+			}	
+		}
+		for (int i = 0; i < regalos.length; i++) {
+			if (regalos[i] != null) {
+				regalos[i].dibujar(entorno);
 			}
-		}*/
-		
+		}
 		
 	}
 	
