@@ -50,6 +50,10 @@ public class Grinch {
 		}
 		return false;
 	}
+	
+	public boolean chocaConRegalo(Regalos r) {
+		return x+tamanio/2>=r.getX()&&y+tamanio>=r.getY();
+	}
 
 
 	public double getX() {
