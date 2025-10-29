@@ -15,16 +15,22 @@ public class Juego extends InterfaceJuego {
 	//Tamaño del tablero
 	private int fila=5;
 	private int columna=10;
+	private int margenX=65;
+    private int margenY=100;
 	private Grinch[] zombieGrinch;
 	private Planta[][] plantas;
 	private Casillero[][] tablero;
 	private Regalos[] regalos;
+	private Disparo[] disparos;
 	private Grinch grinch;
 	private Planta planta;
 	private int zombiesEliminados;
 	private int zombiesRestantes;
 	private int tiempo;
 	private Random random;
+	//Estado del juego
+	private boolean juegoGanado;
+	private boolean juegoPerdido;
 
 	
 	
@@ -43,7 +49,8 @@ public class Juego extends InterfaceJuego {
 		
 		this.plantas = new Planta[fila][columna];  //Lo mismo, ppero con filas y columnas
 
-		
+		this.margenX=margenX;
+		this.margenY=margenY;
 
 		// Calculo dimensiones para ubicar el regalo
 		int anchoCasillero = entorno.ancho() / columna; 
@@ -119,10 +126,11 @@ public class Juego extends InterfaceJuego {
 		//Creacion de los zombies grinch dentro del tablero con sus respectivos moviementos
 		for(int i=0;i<zombieGrinch.length;i++) {
 			if(zombieGrinch[i]!=null) {
+				Grinch g=zombieGrinch[i];
 				zombieGrinch[i].moverIzquierda();
 				zombieGrinch[i].dibujarGrinch(entorno);
-				if(zombieGrinch[i]==null) {
-					zombieGrinch[i].grinchMuerto();
+				if(zombieGrinch[i].grinchMuerto()) {
+					zombieGrinch[i]=null;
 					zombiesEliminados++;
 				}
 			}

@@ -20,7 +20,7 @@ public class Grinch {
 		this.y=opciones[orden.nextInt(5)];
 		this.velocidad=1;
 		this.vida=2;
-		this.tamanio= 40;
+		this.tamanio= 20;
 		orden.nextInt(5);
 	}
 	
