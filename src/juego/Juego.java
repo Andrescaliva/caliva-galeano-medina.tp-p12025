@@ -34,18 +34,16 @@ public class Juego extends InterfaceJuego {
 		
 		// Inicializar lo que haga falta para el juego
 		
-		this.zombieGrinch=new Grinch[15];
-		zombieGrinch[0] = new Grinch(900);
+		this.zombieGrinch=new Grinch[15];   //arreglo con 15 zombies
+		zombieGrinch[0] = new Grinch(900);  //En la posición 0 creo un zombie nuevo en la posición X = 900
 
-		this.plantas=new Planta[fila][columna];
-		this.grinch=new Grinch(800);
-		this.planta=new Planta(entorno.ancho()/2, entorno.alto()/2);
-		this.zombiesEliminados=0;
-		this.zombiesRestantes=100;
-		this.tiempo=0;
-		this.random= new Random();
+		this.grinch=new Grinch(800);        //gricn en la pos 800
 		
-		this.regalos = new Regalos[fila]; 
+		this.regalos = new Regalos[fila];     //Crea un arrego de regaloscon tantas posiciones como filas hay en el tablero
+		
+		this.plantas = new Planta[fila][columna];  //Lo mismo, ppero con filas y columnas
+
+		
 
 		// Calculo dimensiones para ubicar el regalo
 		int anchoCasillero = entorno.ancho() / columna; 
@@ -60,6 +58,15 @@ public class Juego extends InterfaceJuego {
 		    
 		    this.regalos[i] = new Regalos(xInicialRegalo, yInicialRegalo); 
 		}
+		
+		// Crear una planta enfrente de cada regalo en columna 1
+		for (int i = 0; i < fila; i++) {
+		    int xPlanta = (anchoCasillero * 1) + anchoCasillero / 2;
+		    int yPlanta = (altoCasillero * i) + altoCasillero / 2;
+
+		    plantas[i][1] = new Planta(xPlanta, yPlanta); //planta en la fila i y columna 1
+		}
+
 		
 		
 		// Inicia el juego!
@@ -85,10 +92,7 @@ public class Juego extends InterfaceJuego {
                 // Si la suma es impar, es una casilla verde oscuro.
 					tablero[i][j] = new Casillero(x, y, anchoCasillero, altoCasillero, false);
 				}
-				
-//				if (j == 0) {
-//		              entorno.dibujarCirculo(x, y, diametroCirculo, Color.RED); // dibujar circuloss
-//				}       
+				      
 			}
 		}
 		
@@ -102,34 +106,16 @@ public class Juego extends InterfaceJuego {
 	 */
 	public void tick()
 	{	
-//		int anchoCasillero=entorno.ancho()/columna;
-//		int altoCasillero=entorno.alto()/fila;
-//		int diametroCirculo = (int)(Math.min(anchoCasillero, altoCasillero) * 0.8); // circuloo
-//		// Recorremos todas las filas.
+
 		for (int i = 0; i < fila; i++) {
 //        // Dentro de cada fila, recorremos todas las columnas.
 			for (int j = 0; j < columna; j++) {
 				tablero[i][j].dibujar(entorno);
 			}
+			
+
 		}
-//				int x=j*anchoCasillero+anchoCasillero/2;
-//				int y=i*altoCasillero+altoCasillero/2;
-//				// La suma de la fila (i) y la columna (j) determina el color de la casilla.
-//				// Si la suma es par, es una casilla verde claro.
-//				if ((i + j) % 2 == 0) {
-//					entorno.dibujarRectangulo(x, y, anchoCasillero, altoCasillero, 0, Color.GREEN);
-//				} else {
-//                // Si la suma es impar, es una casilla verde oscuro.
-//					entorno.dibujarRectangulo(x, y, anchoCasillero, altoCasillero, 0, Color.GREEN.darker());
-//				}
-//				
-//				if (j == 0) {
-//		              entorno.dibujarCirculo(x, y, diametroCirculo, Color.RED); // dibujar circuloss
-//				}       
-//			}
-//		}
-		
-		
+				
 		//Creacion de los zombies grinch dentro del tablero con sus respectivos moviementos
 		for(int i=0;i<zombieGrinch.length;i++) {
 			if(zombieGrinch[i]!=null) {
@@ -148,20 +134,20 @@ public class Juego extends InterfaceJuego {
 			tiempo--;
 		}
 		
-		//Posicion de plantas
-		planta.dibujar(entorno);
-		for(int i=0;i<plantas.length;i++) {
-			for(int j=0;j<plantas.length;j++) {
-				if(plantas[i][j]!=null) {
-					plantas[i][j].dibujar(entorno);
-				}
-			}	
-		}
-		for (int i = 0; i < regalos.length; i++) {
-			if (regalos[i] != null) {
-				regalos[i].dibujar(entorno);
-			}
-		}
+	//Dibujar regalos
+	
+	for (int i = 0; i < regalos.length; i++) {
+	    if (regalos[i] != null) {
+	        regalos[i].dibujar(entorno);
+	    }
+	}
+	
+	// Dibujar plantas
+	for (int i = 0; i < fila; i++) {
+	    if (plantas[i][1] != null) {
+	        plantas[i][1].dibujar(entorno);
+	    }
+	}
 		
 	}
 	
@@ -172,3 +158,6 @@ public class Juego extends InterfaceJuego {
 		Juego juego = new Juego();
 	}
 }
+
+
+
