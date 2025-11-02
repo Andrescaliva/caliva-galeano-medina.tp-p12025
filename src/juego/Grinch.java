@@ -36,8 +36,8 @@ public class Grinch {
 	
 	
 	public void moverIzquierda() {   //Da el moviemiento de un zombie grinch
-		if(x > 0 ) {
-			x --;
+		if(x > 0) {
+			this.x-=this.velocidad;
 		}
 	}
 		
@@ -49,7 +49,21 @@ public class Grinch {
 	}
 	
 	public boolean chocaConRegalo(Regalos r) {
-		return x+tamanio/2>=r.getX()&&y+tamanio>=r.getY();
+		if(r==null) {
+			return false;
+		}
+		double semiladoRegalo=20.0;
+		
+		double semiradioGrinch=this.tamanio/2.0;
+		double dx=this.x-r.getX();
+		double dy=this.y-r.getY();
+		double distancia=Math.sqrt(dx*dx+dy*dy);
+		
+		return distancia<=(semiradioGrinch+semiladoRegalo);
+	}
+	
+	public void recibirDanio(int danio) {
+		this.vida-=danio;
 	}
 
 
@@ -70,6 +84,11 @@ public class Grinch {
 
 	public void setY(int y) {
 		this.y = y;
+	}
+
+
+	public int getTamanio() {
+		return tamanio;
 	}
 
 }
