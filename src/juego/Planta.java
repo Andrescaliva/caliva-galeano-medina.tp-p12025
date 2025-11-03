@@ -30,8 +30,11 @@ public class Planta {
 	
 	
 	public void dibujar(Entorno e) {
-		Color colorBase=seleccionada?Color.GREEN:Color.YELLOW; 
+		Color colorBase=seleccionada?Color.BLUE:Color.YELLOW; 
 		e.dibujarCirculo(x, y, diametro,colorBase);
+		if(roseBlade) {
+			e.dibujarCirculo(x, y, diametro/2, Color.RED);
+		}
 	}
 	
 	
@@ -46,8 +49,8 @@ public class Planta {
 					double origenY=this.y;
 					juego.disparar(origenX,origenY);
 				}
+				this.contadorDisparos=intervalosDisparos;
 			}
-			this.contadorDisparos=intervalosDisparos;
 		}
 	}
 	

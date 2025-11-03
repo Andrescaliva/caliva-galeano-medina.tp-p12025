@@ -12,4 +12,12 @@ public class BarraSuperior {
 		entorno.dibujarRectangulo(entorno.ancho()/2,alturaBanda/2,entorno.ancho(),alturaBanda,0, Color.gray);
 	}
 
+	public int getAlturaBanda() {
+		return alturaBanda;
+	}
+
+	public void setAlturaBanda(int alturaBanda) {
+		this.alturaBanda = alturaBanda;
+	}
+
 }

@@ -1,7 +1,7 @@
 package juego;
 
 import java.awt.Color;
-import java.util.Random;
+
 
 import entorno.Entorno;
 
@@ -13,15 +13,13 @@ public class Grinch {
 	private int tamanio;
 
 		
-	public Grinch(double x) {
-		Random orden=new Random();
-		int[] opciones ={60,180,300,420,540}; // centro de las filas
+	public Grinch(double x,double y) {
+		// centro de las filas
 		this.x=x;
-		this.y=opciones[orden.nextInt(5)];
+		this.y=y;
 		this.velocidad=1;
 		this.vida=2;
 		this.tamanio= 20;
-		orden.nextInt(5);
 	}
 	
 

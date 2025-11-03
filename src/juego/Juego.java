@@ -51,7 +51,7 @@ public class Juego extends InterfaceJuego {
 		// Inicializar lo que haga falta para el juego
 		
 		this.zombieGrinch=new Grinch[15];   //arreglo con 15 zombies
-		zombieGrinch[0] = new Grinch(900);  //En la posición 0 creo un zombie nuevo en la posición X = 900
+		//zombieGrinch[0] = new Grinch(900);  //En la posición 0 creo un zombie nuevo en la posición X = 900
 
 		//this.grinch=new Grinch(800);        //gricn en la pos 800
 		this.plantas=new Planta[fila][columna];  //Matriz de plantas
@@ -115,6 +115,7 @@ public class Juego extends InterfaceJuego {
 		int px=tablero[testFila][testColumna].getX();
 		int py=tablero[testFila][testColumna].getY();	
 		this.plantas[testFila][testColumna]=new Planta(px,py,true,this);
+		this.plantas[testFila][testColumna].setSeleccionada(true);
 		
 		// Inicia el juego!
 		this.entorno.iniciar();
@@ -146,7 +147,7 @@ public class Juego extends InterfaceJuego {
 		}
         
 		//Manjeo de arrastre de la carta de planta
-		if(!arrastrando && entorno.estaPresionado(entorno.BOTON_DERECHO)){
+		if(!arrastrando && entorno.estaPresionado(entorno.BOTON_IZQUIERDO)){
 			int mouseX=entorno.mouseX();
 			int mouseY=entorno.mouseY();
 			if(mouseX>=cartaRoseX-cartaAncho/2 && mouseX<=cartaRoseX+cartaAncho/2 && mouseY>=cartaRoseY-cartaAlto/2 && mouseY<=cartaRoseY+cartaAlto/2){
@@ -213,7 +214,9 @@ public class Juego extends InterfaceJuego {
 				for(int i=0;i<zombieGrinch.length;i++) {
 					if(zombieGrinch[i]==null) {
 						//Crea un nuevo zombie fuera de pantalla
-						zombieGrinch[i]=new Grinch(entorno.ancho()+50);
+						int filaAleatoria=random.nextInt(fila);
+						int yFila=tablero[filaAleatoria][columna-1].getY();
+						zombieGrinch[i]=new Grinch(entorno.ancho()+50,yFila);
 						enemigosGenerados++;
 						//Reduce la cantidad de zombies restantes
 						zombiesRestantes=Math.max(0, totalEnemigos-enemigosGenerados);
@@ -229,13 +232,22 @@ public class Juego extends InterfaceJuego {
 			if(zombieGrinch[i]!=null) {
 				zombieGrinch[i].moverIzquierda();
 				zombieGrinch[i].dibujarGrinch(entorno);
+				//Si el grinch se sale de la pantalla
 				if(zombieGrinch[i].getX()<0) {
 					zombieGrinch[i]=null;
 					continue;
 				}
+				//Si el grinch se muere
 				if(zombieGrinch[i].grinchMuerto()) {
 					zombieGrinch[i]=null;
 					zombiesEliminados++;
+				}
+				//Si el grinch entra en contacto con el regalo
+				for(int j=0;j<regalos.length;j++) {
+					if(regalos[j]!=null&&zombieGrinch[i].chocaConRegalo(regalos[j])) {
+						juegoTerminado=true;
+						juegoGanado=false;
+					}
 				}
 			}
 			
@@ -303,7 +315,54 @@ public class Juego extends InterfaceJuego {
 	if(plantaPrevizualizada!=null){
 		plantaPrevizualizada.dibujar(entorno);
 	}
+	
+	
+	//Movimiento de la planta selecccionada
+	
+	for(int i=0;i<fila;i++) {
+		for(int j=0;j<columna;j++) {
+			Planta planta=plantas[i][j];
+			if(planta != null && planta.isSeleccionada()) {
+			     int velocidad = 5;  // pixeles por tick
+			     
+			     if(entorno.estaPresionada(entorno.TECLA_ARRIBA)&&planta.getY()-velocidad-planta.getDiametro()>barraSuperior.getAlturaBanda()) {
+			         planta.moverArriba(velocidad);
+			     }
+			     if(entorno.estaPresionada(entorno.TECLA_ABAJO)) {
+			         planta.moverAbajo(velocidad);
+			     }
+			     if(entorno.estaPresionada(entorno.TECLA_IZQUIERDA)) {
+			         planta.moverIzquierda(velocidad);
+			     }
+			     if(entorno.estaPresionada(entorno.TECLA_DERECHA)) {
+			         planta.moverDerecha(velocidad);
+			     } 
+			     planta.dibujar(entorno);
+			 }
+		}
+	}
+	  
+	
+	//Verificacion de victoria o derrota
+	if(zombiesRestantes==0&&zombiesEliminados>=totalEnemigos) {
+		juegoTerminado=true;
+		juegoGanado=true;
+	}
+	
+	entorno.cambiarFont("Arial", 20, Color.RED);
+	if(juegoTerminado) {
+		if(juegoGanado) {
+			entorno.escribirTexto("¡Has ganado!", entorno.ancho()/2, entorno.alto()/2);
+		}else {
+			entorno.escribirTexto("¡Has perdido!", entorno.ancho()/2, entorno.alto()/2);
+		}
+	}
+	
 }
+	
+	
+	
+	
 	//Metodo auxiliar para el control de los disparos
 	public void disparar(double x, double y){
 		for(int i=0;i<disparos.length;i++){
