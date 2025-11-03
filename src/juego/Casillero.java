@@ -9,6 +9,7 @@ public class Casillero {
 	private int ancho;
 	private int alto;
 	private boolean esVerde;
+	boolean ocupada;
 
 	public Casillero(int x, int y, int ancho, int alto, boolean esVerde){
 		this.x=x;
@@ -25,6 +26,10 @@ public class Casillero {
 			entorno.dibujarRectangulo(x, y, ancho, alto, 0, Color.GREEN.darker());
 		}
 	}
+	
+//	public boolean estaDisponible() {
+//		
+//	}
 
 	public int getX(){
 		return x;

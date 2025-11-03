@@ -115,19 +115,23 @@ public class Planta {
 	
 	
 	
-	public void moverArriba(int desplazamiento) {
+	public void moverArriba(int desplazamiento, Casillero[][] tablero) {
+		
+//		if() {
+//			
+//		}
 	     this.y -= desplazamiento;
 	 }
 
-	 public void moverAbajo(int desplazamiento) {
+	 public void moverAbajo(int desplazamiento, Casillero[][] tablero) {
 	     this.y += desplazamiento;
 	 }
 
-	 public void moverIzquierda(int desplazamiento) {
+	 public void moverIzquierda(int desplazamiento, Casillero[][] tablero) {
 	     this.x -= desplazamiento;
 	 }
 
-	 public void moverDerecha(int desplazamiento) {
+	 public void moverDerecha(int desplazamiento, Casillero[][] tablero) {
 	     this.x += desplazamiento;
 	 }
 
