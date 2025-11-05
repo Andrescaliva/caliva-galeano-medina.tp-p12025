@@ -48,15 +48,14 @@ public class Planta {
 					double origenX=this.x+this.diametro/2.0+4;
 					double origenY=this.y;
 					juego.disparar(origenX,origenY);
+					this.contadorDisparos=intervalosDisparos;
 				}
-				this.contadorDisparos=intervalosDisparos;
 			}
 		}
 	}
 	
 	public boolean contienePunto(int px, int py) {
-		double distancia=Math.sqrt(Math.pow(px-x, 2)+Math.pow(py-y, 2));
-		return distancia<diametro/2.0;
+		return Math.hypot(px-x, py-y)<diametro/2.0;
 	}
 	
 	
@@ -69,7 +68,6 @@ public class Planta {
 			this.y+=dy;
 		}
 	}
-	
 	
 	
 	 
@@ -115,25 +113,50 @@ public class Planta {
 	
 	
 	
-	public void moverArriba(int desplazamiento, Casillero[][] tablero) {
+	public void moverArriba(int desplazamiento, Casillero[][] tablero, Planta[][] plantas, int fila, int columna) {
 		
-//		if() {
-//			
-//		}
-	     this.y -= desplazamiento;
+	     int nuevoY=this.y -= desplazamiento;
+	     if(nuevoY-diametro/2>90&&!casillaOcupada(x,nuevoY,tablero,plantas, fila,columna)) {
+				this.y=nuevoY;
+			}
 	 }
 
-	 public void moverAbajo(int desplazamiento, Casillero[][] tablero) {
-	     this.y += desplazamiento;
+	 public void moverAbajo(int desplazamiento, Casillero[][] tablero, Planta[][] plantas, int fila, int columna) {
+		  
+	     int nuevoY=this.y += desplazamiento;
+	     if(nuevoY-diametro/2<600&&!casillaOcupada(x,nuevoY,tablero,plantas,fila,columna)) {
+	    	 this.y=nuevoY;
+	     }
 	 }
 
-	 public void moverIzquierda(int desplazamiento, Casillero[][] tablero) {
-	     this.x -= desplazamiento;
+	 public void moverIzquierda(int desplazamiento, Casillero[][] tablero, Planta[][] plantas, int fila, int columna) {
+	     int nuevoX=this.x -= desplazamiento;
+	     if(nuevoX-diametro/2>0&&!casillaOcupada(nuevoX,y,tablero,plantas,fila,columna)) {
+	    	 this.x=nuevoX;
+	     }
 	 }
 
-	 public void moverDerecha(int desplazamiento, Casillero[][] tablero) {
-	     this.x += desplazamiento;
+	 public void moverDerecha(int desplazamiento, Casillero[][] tablero, Planta[][] plantas, int fila, int columna) {
+		 int nuevoX=this.x += desplazamiento;
+		 if(nuevoX-diametro/2<800&&!casillaOcupada(nuevoX,y,tablero,plantas,fila,columna)) {
+			 this.x=nuevoX;
+		 }
 	 }
+	 
+	 
+	 public boolean casillaOcupada(int px, int py, Casillero[][] tablero, Planta[][] plantas, int fila, int columna) {
+		for(int i=0;i<fila;i++) {
+			for(int j=0;j<columna;j++) {
+				Casillero c=tablero[i][j];
+				//Verfiicacion si la posicion esta dentro de la casilla
+				if(Math.abs(px-c.getX())<=c.getAncho()/2 && Math.abs(py-c.getY())<=c.getAlto()/2) {
+					return plantas[i][j] != null && plantas[i][j]!=this;// Devuelve true si hay una planta dentro de la casilla actual y no en la actual
+				}
+			}
+		}
+		return false; //Indica que la casilla no esta ocupada
+	}
+		
 
 
 	public void setX(int x) {

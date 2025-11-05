@@ -46,5 +46,12 @@ public class Casillero {
 	public int getAlto(){
 		return alto;
 	}
+	public boolean isOcupada() {
+		return ocupada;
+	}
+	public void setOcupada(boolean ocupada) {
+		this.ocupada = ocupada;
+	}
+	
 }
 

@@ -28,17 +28,18 @@ public class Juego extends InterfaceJuego {
 	private int zombiesEliminados=0;
 	private int zombiesRestantes=totalEnemigos;
 	private int tiempo;
-	//private Random random; // usar dentro los metodos
+	private Random random=new Random(); // usar dentro los metodos
 	private BarraSuperior barraSuperior;
 
 	//Carta de planatas para el HUD
 	private boolean arrastrando=false;
 	private Planta plantaPrevizualizada=null;
 	private CartaPlanta carta;
-	private int cartaRoseX=80;  //Clase carta
-	private int cartaRoseY=30; //Clase carta
-	private int cartaAncho=60; //Clase carta
-	private int cartaAlto=40; //Clase carta
+	private int tiempoTranscurrido=0;
+	//private int cartaRoseX=80;  //Clase carta
+	//private int cartaRoseY=30; //Clase carta
+	//private int cartaAncho=60; //Clase carta
+	//private int cartaAlto=40; //Clase carta
 	int tiempoDisp = 500;//Clase carta
 	
 
@@ -48,7 +49,7 @@ public class Juego extends InterfaceJuego {
 
 
 	public Juego() {
-		Random random = new Random();
+		
 		// Inicializa el objeto entorno
 		this.entorno = new Entorno(this, "La inavasion de los zombies Grinch - Grupo 6 - Caliva - Galeano -Medina", 800, 600);
 		
@@ -61,7 +62,7 @@ public class Juego extends InterfaceJuego {
 		this.plantas=new Planta[fila][columna];  //Matriz de plantas
 		this.regalos = new Regalos[fila];     //Crea un arrego de regaloscon tantas posiciones como filas hay en el tablero
 		this.disparos=new Disparo[50];	  //arreglo para los disparos
-		this.carta=new CartaPlanta(80,30,60,40);
+		this.carta=new CartaPlanta(80,30,60,40,500);
 		this.barraSuperior = new BarraSuperior();
 		this.zombiesEliminados=0;
 		this.zombiesRestantes=totalEnemigos;
@@ -134,15 +135,20 @@ public class Juego extends InterfaceJuego {
 	 */
 	public void tick()
 	{	
-		this.barraSuperior.dibujar(entorno);
-		entorno.dibujarRectangulo(cartaRoseX,cartaRoseY,cartaAncho,cartaAlto,0,Color.PINK);
+		tiempoTranscurrido++;
+		carta.actualizarTicks();//actualiza la carga de disponibildad planta
+		
+		
+		this.barraSuperior.dibujar(entorno, zombiesEliminados, zombiesRestantes, tiempoTranscurrido/60);
+		this.carta.Dibujar(entorno);
+		//entorno.dibujarRectangulo(cartaRoseX,cartaRoseY,cartaAncho,cartaAlto,0,Color.PINK);
 	
-		entorno.cambiarFont("Arial", 18, Color.black);
-		entorno.escribirTexto("Rose Blade" + tiempoDisp, (double)cartaRoseX, (double)cartaRoseY);
+		//entorno.cambiarFont("Arial", 18, Color.black);
+		//entorno.escribirTexto("Rose Blade" + tiempoDisp, (double)cartaRoseX, (double)cartaRoseY);
         
-		if(tiempoDisp>0) {
+		/*if(tiempoDisp>0) {
 		tiempoDisp--;
-		}
+		}*/
 		
         //Dibujo del tablero
 		for (int i = 0; i < fila; i++) {
@@ -156,97 +162,81 @@ public class Juego extends InterfaceJuego {
 		}
         
 		//Manjeo de arrastre de la carta de planta
-		if(!arrastrando && entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && tiempoDisp==0){
-			int mouseX=entorno.mouseX();
-			int mouseY=entorno.mouseY();
-			if(mouseX>=cartaRoseX-cartaAncho/2 && mouseX<=cartaRoseX+cartaAncho/2 && mouseY>=cartaRoseY-cartaAlto/2 && mouseY<=cartaRoseY+cartaAlto/2){
-				arrastrando=true;
-				plantaPrevizualizada=new Planta(mouseX,mouseY,true,this);
-			} else{
-				//click fuera de la carta
-				int mouseX2=mouseX;
-				int mouseY2=mouseY;
-				for(int i=0;i<fila;i++){
-					for(int j=0;j<columna;j++){
-						Planta p=plantas[i][j];
-						if(p!=null&&p.contienePunto(mouseX2, mouseY2)){
-						//sellecciona unicamente esa planta para el tablero
-						deseleccionarTodas();
-						p.setSeleccionada(true);	
-						}
-					}
-				}
-			}
-		}
-
-		//mientras mantenga presionado, actualiza la vista previa del mouse
-		if(arrastrando && entorno.estaPresionado(entorno.BOTON_IZQUIERDO)){
-			int mouseX=entorno.mouseX();
-			int mouseY=entorno.mouseY();
-			if(plantaPrevizualizada!=null){
-				plantaPrevizualizada.moverPlanta(mouseX-plantaPrevizualizada.getX(), mouseY-plantaPrevizualizada.getY());
-			}
-		}
-
-		//soltar la planta en el tablero y deteccion de casilletro libre u ocupado
-		if(arrastrando && !entorno.estaPresionado(entorno.BOTON_IZQUIERDO)){
-			int mouseX=entorno.mouseX();
-			int mouseY=entorno.mouseY();
-			int[] ij= cooodenadasCasillero(mouseX,mouseY);
-			if(ij!=null){
-				int fi=ij[0];
-				int co=ij[1];
-				//Si hay un casillero libre,  se coloca la planta
-				if(plantas[fi][co]==null){
-					int px=tablero[fi][co].getX();
-					int py=tablero[fi][co].getY();
-					plantas[fi][co]=new Planta(px,py,true,this);//Roseblade por defecto
-				}
-			}
-			plantaPrevizualizada=null;
-			arrastrando=false;
-		}
+		arrastrePlanta();
 
 
 		
 		if(enemigosGenerados<totalEnemigos){
 			tiempo--;
 			//Cuenta cuantos zombies activos hay en el tablero
-			int activos=0;
-			for(int i=0;i<zombieGrinch.length;i++) {
-				if(zombieGrinch[i]!=null) {
-					activos++;
-				}
-			}
+			int activos=contadorActivos(zombieGrinch);
 			if(tiempo<=0 && activos<maxZombiesSimultaneos) {
-				generacionZombiesAleatorios();
+				
+				int zombiesAntes=activos;
+				
+				Grinch.generacionZombiesAleatorios(zombieGrinch, tablero, fila, columna, entorno, random);
+				int zombiesDespues=contadorActivos(zombieGrinch);
+				if(zombiesAntes>zombiesDespues) {
+					enemigosGenerados++;
+					zombiesRestantes=Math.max(0, totalEnemigos);
+					tiempo=random.nextInt(maximoTiemporRegernacion-minimioTiempoRegeneracion+1)+minimioTiempoRegeneracion;
+				}
+				/*
+				 * for(int i=0;i<zombieGrinch.length;i++) { if (zombieGrinch[i] == null) { int
+				 * tipo = random.nextInt(3); int filaAleatoria = random.nextInt(fila); int yFila
+				 * = tablero[filaAleatoria][columna - 1].getY(); if (tipo == 0) {
+				 * zombieGrinch[i] = new Grinch(entorno.ancho() + 50, yFila+10, -1,
+				 * filaAleatoria); } else if (tipo == 1) { zombieGrinch[i] = new
+				 * Grinch(tablero[filaAleatoria][4].getX(), -50, filaAleatoria, -1); } else {
+				 * zombieGrinch[i] = new Grinch(tablero[filaAleatoria][4].getX(), entorno.alto()
+				 * + 50, filaAleatoria, fila); } zombieGrinch[i].setGenerado(true);
+				 * enemigosGenerados++; zombiesRestantes = Math.max(0, totalEnemigos -
+				 * enemigosGenerados); tiempo = random.nextInt(maximoTiemporRegernacion -
+				 * minimioTiempoRegeneracion + 1) + minimioTiempoRegeneracion; break; } }
+				 */	
 			}
 		}
+		
 		//Creacion de los zombies grinch dentro del tablero con sus respectivos moviementos
 		for(int i=0;i<zombieGrinch.length;i++) {
 			if(zombieGrinch[i]!=null) {
 				zombieGrinch[i].moverIzquierda();
 				zombieGrinch[i].dibujarGrinch(entorno);
+				
+				boolean eliminado=false;
 				//Si el grinch se sale de la pantalla
 				if(zombieGrinch[i].getX()<0) {
 					zombieGrinch[i]=null;
-					continue;
-				}
-				//Si el grinch se muere
-				if(zombieGrinch[i].grinchMuerto()) {
+					eliminado=true;
+				} else if(zombieGrinch[i].grinchMuerto()) {
 					zombieGrinch[i]=null;
 					zombiesEliminados++;
+					eliminado=true;
 				}
+				
+				if(eliminado) {
+					continue;
+				}
+				Planta planta=obtenerPlantaEnPosicion(zombieGrinch[i].getX(),zombieGrinch[i].getY());
+				if(planta!=null) {
+					quitarPlanta(planta); //Elimina planta 
+					zombieGrinch[i].ralentizacion(60);//
+					
+				}
+				
 				//Si el grinch entra en contacto con el regalo
 				for(int j=0;j<regalos.length;j++) {
 					if(regalos[j]!=null&&zombieGrinch[i].chocaConRegalo(regalos[j])) {
 						juegoTerminado=true;
 						juegoGanado=false;
+						break;
 					}
 				}
 			}
 			
 		}
+		
+		
 		//Control y dibujo de los disparos, movimiento, dibujo y colision de los grinch
 		for(int i=0;i<disparos.length;i++){
 			Disparo d=disparos[i];
@@ -259,7 +249,7 @@ public class Juego extends InterfaceJuego {
 			d.moverDerecha();
 			d.dibujar(entorno);
             //Fuera de pantalla: eliminar zombie
-			if(d.getX()>entorno.ancho()+100){
+			if(d.getX()>entorno.ancho()){
 				disparos[i]=null;
 				continue;
 			}
@@ -322,17 +312,17 @@ public class Juego extends InterfaceJuego {
 			     
 			     if(entorno.estaPresionada(entorno.TECLA_ARRIBA)&&planta.getY()-velocidad-planta.getDiametro()>barraSuperior.getAlturaBanda()) { // && !planta.tocaCasillaocupada(tablero)) {
 //			         planta.moverArriba(velocidad);
-			         planta.moverArriba(velocidad, tablero);
+			         planta.moverArriba(velocidad, tablero,plantas,fila,columna);
 			     }
-//			     if(entorno.estaPresionada(entorno.TECLA_ABAJO)) {
-//			         planta.moverAbajo(velocidad,tablero);
-//			     }
-//			     if(entorno.estaPresionada(entorno.TECLA_IZQUIERDA)) {
-//			         planta.moverIzquierda(velocidad,tablero);
-//			     }
-//			     if(entorno.estaPresionada(entorno.TECLA_DERECHA)) {
-//			         planta.moverDerecha(velocidad,tablero);
-//			     } 
+			     if(entorno.estaPresionada(entorno.TECLA_ABAJO)&&planta.getY()+velocidad+planta.getDiametro()<entorno.alto()) {
+			         planta.moverAbajo(velocidad,tablero,plantas,fila,columna);
+			     }
+			     if(entorno.estaPresionada(entorno.TECLA_IZQUIERDA)&&planta.getX()-velocidad-planta.getDiametro()>0) {
+			         planta.moverIzquierda(velocidad,tablero,plantas,fila,columna);
+			     }
+			     if(entorno.estaPresionada(entorno.TECLA_DERECHA) && planta.getX()+velocidad+planta.getDiametro() <entorno.ancho()) {
+			         planta.moverDerecha(velocidad,tablero,plantas,fila,columna);
+			     } 
 			     planta.dibujar(entorno);
 			 }
 		}
@@ -340,10 +330,10 @@ public class Juego extends InterfaceJuego {
 	  
 	
 	//Verificacion de victoria o derrota
-	if(zombiesRestantes==0&&zombiesEliminados>=totalEnemigos) {
-		juegoTerminado=true;
-		juegoGanado=true;
-	}
+	  if(zombiesEliminados>=totalEnemigos) {
+		  juegoTerminado=true;
+		  juegoGanado=true;
+	 }
 	
 	entorno.cambiarFont("Arial", 20, Color.RED);
 	if(juegoTerminado) {
@@ -393,24 +383,92 @@ public class Juego extends InterfaceJuego {
 		}
 	}
 	
-	public void generacionZombiesAleatorios() { //Pasar a grinch
-		Random random = new Random();
-		//Busca la primera posicion nula del arreglo para crear un nuevo zombie
-		for(int i=0;i<zombieGrinch.length;i++) {
-			if(zombieGrinch[i]==null) {
-				//Crea un nuevo zombie fuera de pantalla
-				int filaAleatoria=random.nextInt(fila);
-				int yFila=tablero[filaAleatoria][columna-1].getY();
-				zombieGrinch[i]=new Grinch(entorno.ancho()+50,yFila);
-				enemigosGenerados++;
-				//Reduce la cantidad de zombies restantes
-				zombiesRestantes=Math.max(0, totalEnemigos-enemigosGenerados);
-				//reinicia el tiempo de regeneracion
-				tiempo=random.nextInt(maximoTiemporRegernacion-minimioTiempoRegeneracion+1)+minimioTiempoRegeneracion;
-				break;
+	private Planta obtenerPlantaEnPosicion(double x,double y) {
+		for(int i=0;i<fila;i++) {
+			for(int j=0;j<columna;j++) {
+				Planta p= plantas[i][j];
+				if(p!=null&&Math.abs(p.getX()-x)<p.getDiametro()/2 && Math.abs(p.getY()-y)<p.getDiametro()/2) {
+					return p;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public void quitarPlanta(Planta p) {
+		for(int i=0;i<fila;i++) {
+			for(int j=0;j<columna;j++) {
+				if(plantas[i][j]==p) {
+					plantas[i][j]=null;
+					return;
+				}
 			}
 		}
 	}
+	
+	public int contadorActivos(Grinch[] a) {
+		int contador=0;
+		for(int i=0;i<a.length;i++) {
+			if(a[i]!=null) {
+				contador++;
+			}
+		}
+		return contador;
+	}
+	
+	public void arrastrePlanta() {
+		//Manjeo de arrastre de la carta de planta
+			if(!arrastrando && entorno.estaPresionado(entorno.BOTON_IZQUIERDO)){
+				int mouseX=entorno.mouseX();
+				int mouseY=entorno.mouseY();
+				if(carta.contienePunto(mouseX, mouseY)&&carta.puedeUsar()){
+					arrastrando=true;
+					plantaPrevizualizada=new Planta(mouseX,mouseY,true,this);
+				} else{
+						//click fuera de la carta
+					deseleccionarTodas();
+					for(int i=0;i<fila;i++){
+						for(int j=0;j<columna;j++){
+							Planta p=plantas[i][j];
+							if(p!=null&&p.contienePunto(mouseX, mouseY)){
+							//sellecciona unicamente esa planta para el tablero
+								p.setSeleccionada(true);	
+							}
+						}
+					}
+				}
+			}
+
+			//mientras mantenga presionado, actualiza la vista previa del mouse
+			if(arrastrando && entorno.estaPresionado(entorno.BOTON_IZQUIERDO)){
+				int mouseX=entorno.mouseX();
+				int mouseY=entorno.mouseY();
+				if(plantaPrevizualizada!=null){
+						plantaPrevizualizada.moverPlanta(mouseX-plantaPrevizualizada.getX(), mouseY-plantaPrevizualizada.getY());
+				}
+			}
+
+			//soltar la planta en el tablero y deteccion de casilletro libre u ocupado
+			if(arrastrando && !entorno.estaPresionado(entorno.BOTON_IZQUIERDO)){
+				int mouseX=entorno.mouseX();
+				int mouseY=entorno.mouseY();
+				int[] ij= cooodenadasCasillero(mouseX,mouseY);
+				if(ij!=null){
+					int fi=ij[0];
+					int co=ij[1];
+					//Si hay un casillero libre,  se coloca la planta
+					if(plantas[fi][co]==null){
+						int px=tablero[fi][co].getX();
+						int py=tablero[fi][co].getY();
+						plantas[fi][co]=new Planta(px,py,true,this);//Roseblade por defecto
+						carta.reiniciarCarga();
+					}
+				}
+				plantaPrevizualizada=null;
+				arrastrando=false;
+		}
+	}
+	
 
 	@SuppressWarnings("unused")
 	public static void main(String[] args)
