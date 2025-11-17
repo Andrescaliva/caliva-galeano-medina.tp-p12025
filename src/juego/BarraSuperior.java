@@ -11,7 +11,7 @@ public class BarraSuperior {
 		//Dibuja el rectangulo
 		entorno.dibujarRectangulo(entorno.ancho()/2,alturaBanda/2,entorno.ancho(),alturaBanda,0, Color.gray);
 		entorno.cambiarFont("Arial", 18, Color.black);
-		entorno.escribirTexto("Zombies eliminados: "+zombiesEliminados+"| Tiempo: "+tiempo+"s", 130, 40);
+		entorno.escribirTexto("Zombies eliminados: "+zombiesEliminados+"| Tiempo: "+tiempo+"s | Zombies Restantes: "+zombiesRestantes, 130, 40);
 	}
 
 	public int getAlturaBanda() {

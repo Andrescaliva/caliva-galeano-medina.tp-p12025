@@ -23,7 +23,7 @@ public class CartaPlanta {
 	public void Dibujar(Entorno e) {
 		e.dibujarRectangulo(cartaRoseX,cartaRoseY,cartaAncho,cartaAlto,0,Color.PINK);
 		e.cambiarFont("Arial", 12, Color.black);
-		e.escribirTexto("Rose Blade" + tiempoDisp, cartaRoseX, cartaRoseY);
+		e.escribirTexto("Rose Blade" + tiempoDisp, 20, 30);
 		int barraAncho=(int)(cartaAncho*(1.0-(double)tiempoDisp/tiempoCarga));
 		e.dibujarRectangulo(cartaRoseX-cartaAncho/2+barraAncho,cartaRoseY+cartaAlto/2-5,barraAncho,10,0,Color.GREEN);
 	}
