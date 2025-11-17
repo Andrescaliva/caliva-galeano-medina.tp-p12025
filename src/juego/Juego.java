@@ -20,15 +20,15 @@ public class Juego extends InterfaceJuego {
 	private Planta[][] plantas;//Matriz de plantas
 	private Regalos[] regalos;
 	private Disparo[] disparos;
-	private int minimioTiempoRegeneracion=60;
-	private int maximoTiemporRegernacion=180;
-	private int totalEnemigos=60;
-	private int enemigosGenerados=0;
-	private int maxZombiesSimultaneos=10;
-	private int zombiesEliminados=0;
-	private int zombiesRestantes=totalEnemigos;
+	private int minimioTiempoRegeneracion;
+	private int maximoTiemporRegernacion;
+	private int totalEnemigos;
+	private int enemigosGenerados;
+	private int maxZombiesSimultaneos;
+	private int zombiesEliminados;
+	private int zombiesRestantes;
 	private int tiempo;
-	private Random random=new Random(); // usar dentro los metodos
+	private Random random;// usar dentro los metodos
 	private BarraSuperior barraSuperior;
 
 	//Carta de planatas para el HUD
@@ -57,15 +57,22 @@ public class Juego extends InterfaceJuego {
 		
 		this.zombieGrinch=new Grinch[15];   //arreglo con 15 zombies
 		//zombieGrinch[0] = new Grinch(900);  //En la posición 0 creo un zombie nuevo en la posición X = 900
-
+   
 		//this.grinch=new Grinch(800);        //gricn en la pos 800
+		this.random=new Random();
 		this.plantas=new Planta[fila][columna];  //Matriz de plantas
 		this.regalos = new Regalos[fila];     //Crea un arrego de regaloscon tantas posiciones como filas hay en el tablero
 		this.disparos=new Disparo[50];	  //arreglo para los disparos
 		this.carta=new CartaPlanta(80,30,60,40,500);
 		this.barraSuperior = new BarraSuperior();
+		this.minimioTiempoRegeneracion=60;
+		this.maximoTiemporRegernacion=180;
+		this.totalEnemigos=60;
+		this.enemigosGenerados=0;
+		this.maxZombiesSimultaneos=10;
 		this.zombiesEliminados=0;
 		this.zombiesRestantes=totalEnemigos;
+		
 		this.tiempo=random.nextInt(maximoTiemporRegernacion-minimioTiempoRegeneracion+1)+minimioTiempoRegeneracion; 
 
 
@@ -119,7 +126,7 @@ public class Juego extends InterfaceJuego {
 		int testColumna=1;
 		int px=tablero[testFila][testColumna].getX();
 		int py=tablero[testFila][testColumna].getY();	
-		this.plantas[testFila][testColumna]=new Planta(px,py,true,this);
+		this.plantas[testFila][testColumna]=new Planta(px,py,true);
 		this.plantas[testFila][testColumna].setSeleccionada(true);
 		
 		// Inicia el juego!
@@ -293,7 +300,10 @@ public class Juego extends InterfaceJuego {
 			Planta p = plantas[i][j];
 			if(p!=null){
 				p.dibujar(entorno);
-				p.actualizarEstado();
+				Disparo nuevo =p.actualizarEstado();
+				if(nuevo!=null) {
+					disparo(nuevo);
+				}
 			}
 		}
 	}
@@ -350,10 +360,10 @@ public class Juego extends InterfaceJuego {
 	
 	
 	//Metodo auxiliar para el control de los disparos
-	public void disparar(double x, double y){
+	public void disparo(Disparo d){
 		for(int i=0;i<disparos.length;i++){
 			if(disparos[i]==null){
-				disparos[i]=new Disparo(x, y, 5, 5, Color.YELLOW, 1);
+				disparos[i]=d;
 				break;
 			}
 		}
@@ -423,7 +433,7 @@ public class Juego extends InterfaceJuego {
 				int mouseY=entorno.mouseY();
 				if(carta.contienePunto(mouseX, mouseY)&&carta.puedeUsar()){
 					arrastrando=true;
-					plantaPrevizualizada=new Planta(mouseX,mouseY,true,this);
+					plantaPrevizualizada=new Planta(mouseX,mouseY,true);
 				} else{
 						//click fuera de la carta
 					deseleccionarTodas();
@@ -460,7 +470,7 @@ public class Juego extends InterfaceJuego {
 					if(plantas[fi][co]==null){
 						int px=tablero[fi][co].getX();
 						int py=tablero[fi][co].getY();
-						plantas[fi][co]=new Planta(px,py,true,this);//Roseblade por defecto
+						plantas[fi][co]=new Planta(px,py,true);//Roseblade por defecto
 						carta.reiniciarCarga();
 					}
 				}

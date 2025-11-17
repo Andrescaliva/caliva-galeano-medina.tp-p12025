@@ -1,8 +1,9 @@
 package juego;
 
-import java.awt.Color;
+import java.awt.*;
 
 import entorno.Entorno;
+import entorno.Herramientas;
 
 public class Planta {
 	private int x ;   //Fila 
@@ -13,16 +14,14 @@ public class Planta {
 	private boolean roseBlade;
 	private int intervalosDisparos;
 	private int contadorDisparos;
-	private Juego juego;
 	
-	public Planta(int x, int y,boolean roseBlade, Juego juego) {
+	public Planta(int x, int y,boolean roseBlade) {
 		this.x = x;
 		this.y = y;
 		this.vida = roseBlade ?2:3;
 		this.seleccionada=false;
 		this.diametro= 37;
 		this.roseBlade=roseBlade;
-		this.juego=juego;
 		this.intervalosDisparos=45; //ticks entre Disparos
 		this.contadorDisparos=0;
 		
@@ -30,29 +29,31 @@ public class Planta {
 	
 	
 	public void dibujar(Entorno e) {
-		Color colorBase=seleccionada?Color.BLUE:Color.YELLOW; 
-		e.dibujarCirculo(x, y, diametro,colorBase);
+		Image roseblade=Herramientas.cargarImagen("rosa.png"); 
+		e.dibujarImagen(roseblade, x, y, 0, 0.1);
 		if(roseBlade) {
-			e.dibujarCirculo(x, y, diametro/2, Color.RED);
+			e.dibujarImagen(roseblade, x, y, 0, 0.1);
 		}
 	}
 	
-	
-	public void actualizarEstado() {
-		if(roseBlade) {
-			if(contadorDisparos>0) {
-				contadorDisparos--;
-			}else {
-				//dispara hacia la derecha desde el borde de la planata
-				if(juego!=null) {
-					double origenX=this.x+this.diametro/2.0+4;
-					double origenY=this.y;
-					juego.disparar(origenX,origenY);
-					this.contadorDisparos=intervalosDisparos;
-				}
-			}
-		}
+	public Disparo disparar() {
+		return new Disparo(this.x,this.y,5,5,Color.yellow,1);
 	}
+	
+	public Disparo actualizarEstado() {
+		if(!roseBlade){
+			return null;
+		}
+		
+		if(contadorDisparos>0) {
+			contadorDisparos--;
+			return null;
+		}
+		
+		contadorDisparos=intervalosDisparos;
+		return disparar();
+			
+}
 	
 	public boolean contienePunto(int px, int py) {
 		return Math.hypot(px-x, py-y)<diametro/2.0;
