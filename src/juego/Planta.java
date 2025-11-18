@@ -116,7 +116,7 @@ public class Planta {
 	
 	public void moverArriba(int desplazamiento, Casillero[][] tablero, Planta[][] plantas, int fila, int columna) {
 		
-	     int nuevoY=this.y -= desplazamiento;
+	     int nuevoY=this.y - desplazamiento;
 	     if(nuevoY-diametro/2>90&&!casillaOcupada(x,nuevoY,tablero,plantas, fila,columna)) {
 				this.y=nuevoY;
 			}
@@ -124,21 +124,21 @@ public class Planta {
 
 	 public void moverAbajo(int desplazamiento, Casillero[][] tablero, Planta[][] plantas, int fila, int columna) {
 		  
-	     int nuevoY=this.y += desplazamiento;
+	     int nuevoY=this.y + desplazamiento;
 	     if(nuevoY-diametro/2<600&&!casillaOcupada(x,nuevoY,tablero,plantas,fila,columna)) {
 	    	 this.y=nuevoY;
 	     }
 	 }
 
 	 public void moverIzquierda(int desplazamiento, Casillero[][] tablero, Planta[][] plantas, int fila, int columna) {
-	     int nuevoX=this.x -= desplazamiento;
+	     int nuevoX=this.x - desplazamiento;
 	     if(nuevoX-diametro/2>0&&!casillaOcupada(nuevoX,y,tablero,plantas,fila,columna)) {
 	    	 this.x=nuevoX;
 	     }
 	 }
 
 	 public void moverDerecha(int desplazamiento, Casillero[][] tablero, Planta[][] plantas, int fila, int columna) {
-		 int nuevoX=this.x += desplazamiento;
+		 int nuevoX=this.x + desplazamiento;
 		 if(nuevoX-diametro/2<800&&!casillaOcupada(nuevoX,y,tablero,plantas,fila,columna)) {
 			 this.x=nuevoX;
 		 }
