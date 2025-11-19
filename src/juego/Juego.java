@@ -46,6 +46,7 @@ public class Juego extends InterfaceJuego {
 
 	private boolean juegoTerminado=false;
 	private boolean juegoGanado=false;
+	private boolean juegoPerdido=false;
 
 
 	public Juego() {
@@ -344,13 +345,18 @@ public class Juego extends InterfaceJuego {
 		  juegoTerminado=true;
 		  juegoGanado=true;
 	 }
+	  else{
+		  juegoPerdido=true;
+	  }
+	 
 	
 	entorno.cambiarFont("Arial", 20, Color.RED);
 	if(juegoTerminado) {
 		if(juegoGanado) {
 			entorno.escribirTexto("¡Has ganado!", entorno.ancho()/2, entorno.alto()/2);
-		}else {
-			entorno.escribirTexto("¡Has perdido!", entorno.ancho()/2, entorno.alto()/2);
+		}
+		if(juegoPerdido) {
+			entorno.escribirTexto("Game over", entorno.ancho()/2, entorno.alto()/2);
 		}
 	}
 	
