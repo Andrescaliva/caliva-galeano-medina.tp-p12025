@@ -46,7 +46,6 @@ public class Juego extends InterfaceJuego {
 
 	private boolean juegoTerminado=false;
 	private boolean juegoGanado=false;
-	private boolean juegoPerdido=false;
 
 
 	public Juego() {
@@ -149,14 +148,23 @@ public class Juego extends InterfaceJuego {
 		
 		this.barraSuperior.dibujar(entorno, zombiesEliminados, zombiesRestantes, tiempoTranscurrido/60);
 		this.carta.Dibujar(entorno);
-		//entorno.dibujarRectangulo(cartaRoseX,cartaRoseY,cartaAncho,cartaAlto,0,Color.PINK);
-	
-		//entorno.cambiarFont("Arial", 18, Color.black);
-		//entorno.escribirTexto("Rose Blade" + tiempoDisp, (double)cartaRoseX, (double)cartaRoseY);
-        
-		/*if(tiempoDisp>0) {
-		tiempoDisp--;
-		}*/
+		
+		//Verificacion de victoria o derrota
+		if(zombiesEliminados>=totalEnemigos) {
+			juegoTerminado=true;
+			juegoGanado=true;
+		 }
+		
+		entorno.cambiarFont("Arial", 20, Color.RED);
+		if(juegoTerminado) {
+			if(juegoGanado) {
+				entorno.escribirTexto("¡Has ganado!", entorno.ancho()/2, entorno.alto()/2);
+				return;
+			}else{
+				entorno.escribirTexto("Game over", entorno.ancho()/2, entorno.alto()/2);
+				return;
+			}
+		}
 		
         //Dibujo del tablero
 		for (int i = 0; i < fila; i++) {
@@ -189,19 +197,6 @@ public class Juego extends InterfaceJuego {
 					zombiesRestantes=Math.max(0, totalEnemigos);
 					tiempo=random.nextInt(maximoTiemporRegernacion-minimioTiempoRegeneracion+1)+minimioTiempoRegeneracion;
 				}
-				/*
-				 * for(int i=0;i<zombieGrinch.length;i++) { if (zombieGrinch[i] == null) { int
-				 * tipo = random.nextInt(3); int filaAleatoria = random.nextInt(fila); int yFila
-				 * = tablero[filaAleatoria][columna - 1].getY(); if (tipo == 0) {
-				 * zombieGrinch[i] = new Grinch(entorno.ancho() + 50, yFila+10, -1,
-				 * filaAleatoria); } else if (tipo == 1) { zombieGrinch[i] = new
-				 * Grinch(tablero[filaAleatoria][4].getX(), -50, filaAleatoria, -1); } else {
-				 * zombieGrinch[i] = new Grinch(tablero[filaAleatoria][4].getX(), entorno.alto()
-				 * + 50, filaAleatoria, fila); } zombieGrinch[i].setGenerado(true);
-				 * enemigosGenerados++; zombiesRestantes = Math.max(0, totalEnemigos -
-				 * enemigosGenerados); tiempo = random.nextInt(maximoTiemporRegernacion -
-				 * minimioTiempoRegeneracion + 1) + minimioTiempoRegeneracion; break; } }
-				 */	
 			}
 		}
 		
@@ -340,25 +335,6 @@ public class Juego extends InterfaceJuego {
 	}
 	  
 	
-	//Verificacion de victoria o derrota
-	  if(zombiesEliminados>=totalEnemigos) {
-		  juegoTerminado=true;
-		  juegoGanado=true;
-	 }
-	  else{
-		  juegoPerdido=true;
-	  }
-	 
-	
-	entorno.cambiarFont("Arial", 20, Color.RED);
-	if(juegoTerminado) {
-		if(juegoGanado) {
-			entorno.escribirTexto("¡Has ganado!", entorno.ancho()/2, entorno.alto()/2);
-		}
-		if(juegoPerdido) {
-			entorno.escribirTexto("Game over", entorno.ancho()/2, entorno.alto()/2);
-		}
-	}
 	
 }
 	

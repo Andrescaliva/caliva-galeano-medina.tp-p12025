@@ -70,10 +70,6 @@ public class Planta {
 		}
 	}
 	
-	
-	 
-	
-	
 	public void recicbirDanio(int danio) {
 		this.vida-=danio;
 	}
